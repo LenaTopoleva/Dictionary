@@ -3,7 +3,7 @@ package com.lenatopoleva.dictionary.view.wordslist
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.model.repository.Repository
-import com.lenatopoleva.dictionary.presenter.Interactor
+import com.lenatopoleva.dictionary.viewmodel.Interactor
 import io.reactivex.Observable
 
 class WordsListInteractor(

@@ -1,7 +1,6 @@
 package com.lenatopoleva.dictionary.view
 
 import android.app.Application
-import com.lenatopoleva.dictionary.presenter.PresenterHolder
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.Router
 
@@ -22,6 +21,5 @@ class App: Application() {
 
     val  router = cicerone.router
 
-    val presenterHolder = PresenterHolder()
 
 }
