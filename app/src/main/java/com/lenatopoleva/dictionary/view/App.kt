@@ -2,7 +2,6 @@ package com.lenatopoleva.dictionary.view
 
 import android.app.Application
 import com.lenatopoleva.dictionary.di.AppComponent
-import com.lenatopoleva.dictionary.di.modules.AppModule
 import com.lenatopoleva.dictionary.di.DaggerAppComponent
 
 class App: Application() {
@@ -18,7 +17,7 @@ class App: Application() {
         super.onCreate()
         instance = this
         appComponent = DaggerAppComponent.builder()
-                .appModule(AppModule(this))
+                .application(this)
                 .build()
     }
 
