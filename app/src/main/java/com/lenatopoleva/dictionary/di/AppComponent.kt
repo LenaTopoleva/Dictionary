@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
+@Singleton
 @Component(
     modules = [
         InteractorModule::class,
@@ -16,7 +17,6 @@ import javax.inject.Singleton
         ViewModelModule::class,
         NavigationModule::class]
 )
-@Singleton
 interface AppComponent {
 
     @Component.Builder
