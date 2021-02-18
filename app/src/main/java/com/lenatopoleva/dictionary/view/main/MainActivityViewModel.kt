@@ -2,10 +2,10 @@ package com.lenatopoleva.dictionary.view.main
 
 import androidx.lifecycle.ViewModel
 import com.lenatopoleva.dictionary.navigation.Screens
-import com.lenatopoleva.dictionary.view.App
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class MainActivityViewModel (private val router: Router = App.instance.router): ViewModel(){
+class MainActivityViewModel @Inject constructor(private val router: Router ): ViewModel(){
 
     fun backPressed() {
         router.exit()

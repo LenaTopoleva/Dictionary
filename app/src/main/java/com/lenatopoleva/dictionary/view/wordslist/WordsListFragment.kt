@@ -11,15 +11,20 @@ import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.utils.network.isOnline
+import com.lenatopoleva.dictionary.view.App
 import com.lenatopoleva.dictionary.view.BackButtonListener
 import com.lenatopoleva.dictionary.view.base.BaseFragment
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import kotlinx.android.synthetic.main.fragment_words_list.*
+import javax.inject.Inject
 
 class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
 
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+
     override val model: WordsListViewModel by lazy {
-        ViewModelProvider(this).get(WordsListViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(WordsListViewModel::class.java)
     }
 
     private val observer = Observer<AppState> { renderData(it)  }
@@ -35,6 +40,10 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
     companion object {
         fun newInstance() = WordsListFragment()
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "12345"
+    }
+
+    init {
+        App.instance.appComponent.inject(this)
     }
 
     override fun onCreateView(

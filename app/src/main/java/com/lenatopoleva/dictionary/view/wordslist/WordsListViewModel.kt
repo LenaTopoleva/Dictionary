@@ -2,20 +2,15 @@ package com.lenatopoleva.dictionary.view.wordslist
 
 import androidx.lifecycle.LiveData
 import com.lenatopoleva.dictionary.model.data.AppState
-import com.lenatopoleva.dictionary.model.datasource.DataSourceLocal
-import com.lenatopoleva.dictionary.model.datasource.DataSourceRemote
-import com.lenatopoleva.dictionary.model.repository.RepositoryImpl
 import com.lenatopoleva.dictionary.utils.parseSearchResults
-import com.lenatopoleva.dictionary.view.App
 import com.lenatopoleva.dictionary.viewmodel.BaseViewModel
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class WordsListViewModel( private val interactor: WordsListInteractor = WordsListInteractor(
-    RepositoryImpl(DataSourceRemote()),
-    RepositoryImpl(DataSourceLocal())),
-    private val router: Router = App.instance.router): BaseViewModel<AppState>()  {
+class WordsListViewModel @Inject constructor( private val interactor: WordsListInteractor,
+    private val router: Router): BaseViewModel<AppState>()  {
 
     private var appState: AppState? = null
 
