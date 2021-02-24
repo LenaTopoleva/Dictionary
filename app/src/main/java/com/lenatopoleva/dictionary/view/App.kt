@@ -1,8 +1,11 @@
 package com.lenatopoleva.dictionary.view
 
 import android.app.Application
-import com.lenatopoleva.dictionary.di.AppComponent
-import com.lenatopoleva.dictionary.di.DaggerAppComponent
+import com.lenatopoleva.dictionary.di.modules.application
+import com.lenatopoleva.dictionary.di.modules.mainActivity
+import com.lenatopoleva.dictionary.di.modules.navigation
+import com.lenatopoleva.dictionary.di.modules.wordsListScreen
+import org.koin.core.context.startKoin
 
 class App: Application() {
 
@@ -10,15 +13,12 @@ class App: Application() {
         lateinit var instance: App
     }
 
-    lateinit var appComponent: AppComponent
-        private set
-
     override fun onCreate() {
         super.onCreate()
         instance = this
-        appComponent = DaggerAppComponent.builder()
-                .application(this)
-                .build()
+        startKoin {
+            modules(listOf(application, navigation, mainActivity, wordsListScreen))
+        }
     }
 
 }

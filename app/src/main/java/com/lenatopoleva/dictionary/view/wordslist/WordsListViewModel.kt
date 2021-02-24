@@ -8,9 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.terrakok.cicerone.Router
-import javax.inject.Inject
 
-class WordsListViewModel @Inject constructor( private val interactor: WordsListInteractor,
+class WordsListViewModel ( private val interactor: WordsListInteractor,
     private val router: Router): BaseViewModel<AppState>()  {
 
     fun subscribe(): LiveData<AppState> = liveDataForViewToObserve

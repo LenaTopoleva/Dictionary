@@ -5,27 +5,20 @@ import android.view.LayoutInflater
 import android.view.View.inflate
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.utils.network.isOnline
-import com.lenatopoleva.dictionary.view.App
 import com.lenatopoleva.dictionary.view.BackButtonListener
 import com.lenatopoleva.dictionary.view.base.BaseFragment
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import kotlinx.android.synthetic.main.fragment_words_list.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    override val model: WordsListViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(WordsListViewModel::class.java)
-    }
+    override val model: WordsListViewModel by viewModel()
 
     private val observer = Observer<AppState> { renderData(it)  }
 
@@ -42,10 +35,6 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "12345"
     }
 
-    init {
-        App.instance.appComponent.inject(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +45,7 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
     override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("model: ${model.toString()} ")
+        println("model: $model ")
         model.subscribe().observe(viewLifecycleOwner, observer)
 
         search_fab.setOnClickListener {
