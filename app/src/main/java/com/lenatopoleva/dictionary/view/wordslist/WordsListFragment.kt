@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View.inflate
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.AppState
@@ -14,11 +15,13 @@ import com.lenatopoleva.dictionary.view.BackButtonListener
 import com.lenatopoleva.dictionary.view.base.BaseFragment
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import kotlinx.android.synthetic.main.fragment_words_list.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.getKoin
 
 class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
 
-    override val model: WordsListViewModel by viewModel()
+    override val model: WordsListViewModel by lazy {
+        ViewModelProvider(this, getKoin().get()).get(WordsListViewModel::class.java)
+    }
 
     private val observer = Observer<AppState> { renderData(it)  }
 

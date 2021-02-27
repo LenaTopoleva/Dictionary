@@ -1,7 +1,10 @@
 package com.lenatopoleva.dictionary.di.modules
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.dictionary.di.NAME_LOCAL
 import com.lenatopoleva.dictionary.di.NAME_REMOTE
+import com.lenatopoleva.dictionary.di.ViewModelFactory
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.model.datasource.RetrofitImpl
 import com.lenatopoleva.dictionary.model.datasource.RoomDataBaseImpl
@@ -15,10 +18,22 @@ import org.koin.dsl.module
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
+import javax.inject.Provider
 
 val application = module {
     single<Repository<List<DataModel>>>(named(NAME_REMOTE)) { RepositoryImpl(RetrofitImpl()) }
     single<Repository<List<DataModel>>>(named(NAME_LOCAL)) { RepositoryImpl(RoomDataBaseImpl()) }
+}
+
+val viewModelModule = module {
+    single<MutableMap<Class<out ViewModel>, Provider<ViewModel>>> {
+        var map =
+            mutableMapOf(
+                MainActivityViewModel::class.java to Provider<ViewModel>{MainActivityViewModel(get<Router>())},
+                WordsListViewModel::class.java to Provider<ViewModel>{WordsListViewModel(get<WordsListInteractor>(), get<Router>()) })
+        map
+    }
+    single<ViewModelProvider.Factory> { ViewModelFactory(get())}
 }
 
 val navigation = module {

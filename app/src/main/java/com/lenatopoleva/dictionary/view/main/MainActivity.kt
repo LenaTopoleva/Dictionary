@@ -2,10 +2,10 @@ package com.lenatopoleva.dictionary.view.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.view.BackButtonListener
 import org.koin.android.ext.android.getKoin
-import org.koin.android.viewmodel.ext.android.viewModel
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 
@@ -14,7 +14,9 @@ class MainActivity : AppCompatActivity() {
     val navigatorHolder: NavigatorHolder by lazy { getKoin().get<NavigatorHolder>() }
     val navigator = SupportAppNavigator(this, supportFragmentManager, R.id.container)
 
-    val model: MainActivityViewModel by viewModel()
+    val model: MainActivityViewModel by lazy {
+        ViewModelProvider(this, getKoin().get()).get(MainActivityViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
