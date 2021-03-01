@@ -73,6 +73,7 @@ fun convertDataModelSuccessToEntity(appState: AppState): HistoryEntity? {
 }
 
 fun parseLocalSearchResults(data: AppState): AppState {
+    if((data as AppState.Success).data == null) return AppState.Success(null)
     return AppState.Success(mapResult(data, false))
 }
 

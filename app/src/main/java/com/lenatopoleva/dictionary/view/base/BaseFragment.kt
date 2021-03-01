@@ -32,7 +32,6 @@ abstract class BaseFragment<T : AppState> : Fragment() {
         }
     }
 
-
     protected fun renderData(appState: T) {
         when (appState) {
             is AppState.Success -> {
@@ -46,7 +45,10 @@ abstract class BaseFragment<T : AppState> : Fragment() {
                     } else {
                         setDataToAdapter(it)
                     }
-                }
+                } ?: showAlertDialog(
+                    getString(R.string.dialog_tittle_sorry),
+                    getString(R.string.empty_server_response_on_success)
+                )
             }
             is AppState.Loading -> {
                 showViewLoading()

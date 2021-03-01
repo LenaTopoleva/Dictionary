@@ -14,7 +14,4 @@ class MainActivityViewModel (private val router: Router ): ViewModel(){
         router.replaceScreen(Screens.WordsListScreen())
     }
 
-    fun historyMenuItemClicked() {
-        router.navigateTo(Screens.HistoryScreen())
-    }
 }

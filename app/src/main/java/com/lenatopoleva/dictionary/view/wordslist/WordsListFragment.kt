@@ -1,9 +1,8 @@
 package com.lenatopoleva.dictionary.view.wordslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.view.*
 import android.view.View.inflate
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,11 +37,11 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "12345"
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): android.view.View? = inflate(context, R.layout.fragment_words_list, null)
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
+        val v: View = inflater.inflate(R.layout.fragment_words_list, parent, false)
+        setHasOptionsMenu(true)
+        return v
+    }
 
 
     override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
@@ -64,6 +63,22 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
                 }
             })
             searchDialogFragment.show(childFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
+        }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                model.historyMenuItemClicked()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

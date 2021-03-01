@@ -10,8 +10,10 @@ import com.lenatopoleva.dictionary.utils.mapHistoryEntityToSearchResult
 class RoomDataBaseImpl(private val historyDao: HistoryDao) :
     DataSourceLocal<List<DataModel>> {
 
-    override suspend fun getData(word: String): List<DataModel> {
-        return mapHistoryEntityToSearchResult(historyDao.all())
+    override suspend fun getData(word: String): List<DataModel>? {
+        if (word == "") return mapHistoryEntityToSearchResult(historyDao.all())
+        val historyEntityResult = historyDao.getDataByWord(word)
+        return historyEntityResult?.let { mapHistoryEntityToSearchResult(listOf(it)) }
     }
 
     override suspend fun saveToDB(appState: AppState) {
