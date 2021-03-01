@@ -67,50 +67,15 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
         }
     }
 
-    override fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.Success -> {
-                showViewWorking()
-                val dataModel = appState.data
-                if (dataModel.isNullOrEmpty()) {
-                    showAlertDialog(
-                        getString(R.string.dialog_tittle_sorry),
-                        getString(R.string.empty_server_response_on_success)
-                    )
-                } else {
-                    if (adapter == null) {
-                        main_activity_recyclerview.layoutManager = LinearLayoutManager(context)
-                        main_activity_recyclerview.adapter = WordsListRVAdapter(onListItemClickListener, dataModel)
-                    } else {
-                        adapter!!.setData(dataModel)
-                    }
-                }
-            }
-            is AppState.Loading -> {
-                showViewLoading()
-                if (appState.progress != null) {
-                    progress_bar_horizontal.visibility = android.view.View.VISIBLE
-                    progress_bar_round.visibility = android.view.View.GONE
-                    progress_bar_horizontal.progress = appState.progress
-                } else {
-                    progress_bar_horizontal.visibility = android.view.View.GONE
-                    progress_bar_round.visibility = android.view.View.VISIBLE
-                }
-            }
-            is AppState.Error -> {
-                showViewWorking()
-                showAlertDialog(getString(R.string.error_stub), appState.error.message)            }
+    override fun backPressed(): Boolean = model.backPressed()
+
+    override fun setDataToAdapter(data: List<DataModel>) {
+        if (adapter == null) {
+            words_list_recyclerview.layoutManager = LinearLayoutManager(context)
+            words_list_recyclerview.adapter = WordsListRVAdapter(onListItemClickListener, data)
+        } else {
+            adapter!!.setData(data)
         }
     }
-
-    private fun showViewWorking() {
-        loading_frame_layout.visibility = android.view.View.GONE
-    }
-
-    private fun showViewLoading() {
-        loading_frame_layout.visibility = android.view.View.VISIBLE
-    }
-
-    override fun backPressed(): Boolean = model.backPressed()
 
 }
