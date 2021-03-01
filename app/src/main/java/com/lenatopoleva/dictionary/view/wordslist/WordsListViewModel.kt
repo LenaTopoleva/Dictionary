@@ -2,6 +2,9 @@ package com.lenatopoleva.dictionary.view.wordslist
 
 import androidx.lifecycle.LiveData
 import com.lenatopoleva.dictionary.model.data.AppState
+import com.lenatopoleva.dictionary.model.data.DataModel
+import com.lenatopoleva.dictionary.navigation.Screens
+import com.lenatopoleva.dictionary.utils.convertMeaningsToString
 import com.lenatopoleva.dictionary.utils.parseSearchResults
 import com.lenatopoleva.dictionary.viewmodel.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,5 +43,14 @@ class WordsListViewModel ( private val interactor: WordsListInteractor,
     override fun onCleared() {
         liveDataForViewToObserve.value = AppState.Success(null)
         super.onCleared()
+    }
+
+    fun wordClicked(data: DataModel){
+        router.navigateTo(Screens.DescriptionScreen(
+            data.text!!,
+            convertMeaningsToString(data.meanings!!),
+            data.meanings[0].imageUrl
+        ))
+        println("PICTURE URL = ${data.meanings[0].imageUrl}")
     }
 }

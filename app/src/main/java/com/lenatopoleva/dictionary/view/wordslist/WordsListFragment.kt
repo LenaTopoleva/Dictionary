@@ -29,7 +29,7 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
     private val onListItemClickListener: WordsListRVAdapter.OnListItemClickListener =
         object : WordsListRVAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
-                // some logic
+                model.wordClicked(data)
             }
         }
 
@@ -67,11 +67,11 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
         }
     }
 
-    override fun renderData(dataModel: AppState) {
-        when (dataModel) {
+    override fun renderData(appState: AppState) {
+        when (appState) {
             is AppState.Success -> {
                 showViewWorking()
-                val dataModel = dataModel.data
+                val dataModel = appState.data
                 if (dataModel.isNullOrEmpty()) {
                     showAlertDialog(
                         getString(R.string.dialog_tittle_sorry),
@@ -88,10 +88,10 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
             }
             is AppState.Loading -> {
                 showViewLoading()
-                if (dataModel.progress != null) {
+                if (appState.progress != null) {
                     progress_bar_horizontal.visibility = android.view.View.VISIBLE
                     progress_bar_round.visibility = android.view.View.GONE
-                    progress_bar_horizontal.progress = dataModel.progress
+                    progress_bar_horizontal.progress = appState.progress
                 } else {
                     progress_bar_horizontal.visibility = android.view.View.GONE
                     progress_bar_round.visibility = android.view.View.VISIBLE
@@ -99,7 +99,7 @@ class WordsListFragment : BaseFragment<AppState>(), BackButtonListener {
             }
             is AppState.Error -> {
                 showViewWorking()
-                showAlertDialog(getString(R.string.error_stub), dataModel.error.message)            }
+                showAlertDialog(getString(R.string.error_stub), appState.error.message)            }
         }
     }
 

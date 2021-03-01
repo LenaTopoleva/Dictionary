@@ -1,7 +1,6 @@
 package com.lenatopoleva.dictionary.view.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.AppState
@@ -19,12 +18,12 @@ abstract class BaseFragment<T : AppState> : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isNetworkAvailable = isOnline(activity!!.applicationContext)
+        isNetworkAvailable = isOnline(requireActivity().applicationContext)
     }
 
     override fun onResume() {
         super.onResume()
-        isNetworkAvailable = isOnline(activity!!.applicationContext)
+        isNetworkAvailable = isOnline(requireActivity().applicationContext)
         if (!isNetworkAvailable && isDialogNull()) {
             showNoInternetConnectionDialog()
         }
