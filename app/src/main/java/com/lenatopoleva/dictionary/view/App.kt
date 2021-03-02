@@ -2,6 +2,7 @@ package com.lenatopoleva.dictionary.view
 
 import android.app.Application
 import com.lenatopoleva.dictionary.di.modules.*
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class App: Application() {
@@ -14,7 +15,8 @@ class App: Application() {
         super.onCreate()
         instance = this
         startKoin {
-            modules(listOf(application, viewModelModule, navigation, mainActivity, wordsListScreen))
+            androidContext(applicationContext)
+            modules(listOf(application, viewModelModule, navigation, mainActivity, wordsListScreen, historyScreen))
         }
     }
 

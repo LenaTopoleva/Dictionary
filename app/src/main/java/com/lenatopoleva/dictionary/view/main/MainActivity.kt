@@ -2,6 +2,8 @@ package com.lenatopoleva.dictionary.view.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.view.BackButtonListener
