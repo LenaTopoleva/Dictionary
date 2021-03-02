@@ -2,6 +2,9 @@ package com.lenatopoleva.dictionary.view.historyscreen
 
 import androidx.lifecycle.LiveData
 import com.lenatopoleva.dictionary.model.data.AppState
+import com.lenatopoleva.dictionary.model.data.DataModel
+import com.lenatopoleva.dictionary.navigation.Screens
+import com.lenatopoleva.dictionary.utils.convertMeaningsToString
 import com.lenatopoleva.dictionary.utils.parseLocalSearchResults
 import com.lenatopoleva.dictionary.viewmodel.BaseViewModel
 import kotlinx.coroutines.launch
@@ -24,6 +27,16 @@ class HistoryViewModel(private val interactor: HistoryInteractor, private val ro
 
     private suspend fun startInteractor(word: String, isOnline: Boolean) {
         liveDataForViewToObserve.postValue(parseLocalSearchResults(interactor.getData(word, isOnline)))
+    }
+
+    fun wordClicked(data: DataModel){
+        router.navigateTo(
+            Screens.DescriptionScreen(
+            data.text!!,
+            convertMeaningsToString(data.meanings!!),
+            null
+        ))
+        println("Meanings = ${data.meanings}")
     }
 
     override fun handleError(error: Throwable) {

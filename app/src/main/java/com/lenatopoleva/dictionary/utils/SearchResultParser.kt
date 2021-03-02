@@ -3,6 +3,7 @@ package com.lenatopoleva.dictionary.utils
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.model.data.Meanings
+import com.lenatopoleva.dictionary.model.data.Translation
 import com.lenatopoleva.dictionary.model.datasource.database.room.HistoryEntity
 
 
@@ -52,7 +53,8 @@ fun mapHistoryEntityToSearchResult(list: List<HistoryEntity>): List<DataModel> {
     val searchResult = ArrayList<DataModel>()
     if (!list.isNullOrEmpty()) {
         for (entity in list) {
-            searchResult.add(DataModel(entity.word, null))
+            searchResult.add(DataModel(entity.word, listOf(Meanings(Translation( entity.description), null))))
+            println("Meanings from db = ${entity.description}")
         }
     }
     return searchResult
@@ -65,7 +67,8 @@ fun convertDataModelSuccessToEntity(appState: AppState): HistoryEntity? {
             if (searchResult.isNullOrEmpty() || searchResult[0].text.isNullOrEmpty()) {
                 null
             } else {
-                HistoryEntity(searchResult[0].text!!, null)
+                HistoryEntity(searchResult[0].text!!,
+                    searchResult[0].meanings?.let { convertMeaningsToString(it) })
             }
         }
         else -> null
@@ -103,7 +106,9 @@ private fun getSuccessResultData(
             }
         } else {
             for (searchResult in dataModels) {
-                newDataModels.add(DataModel(searchResult.text, arrayListOf()))
+                newDataModels.add(DataModel(searchResult.text, arrayListOf(Meanings(Translation(
+                    searchResult.meanings?.get(0)?.translation?.translation
+                ), null))))
             }
         }
     }

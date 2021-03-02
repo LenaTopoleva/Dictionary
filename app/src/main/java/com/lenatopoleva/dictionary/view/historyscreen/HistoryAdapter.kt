@@ -3,13 +3,12 @@ package com.lenatopoleva.dictionary.view.historyscreen
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.DataModel
 import kotlinx.android.synthetic.main.history_rv_item.view.*
 
-class HistoryAdapter(private var data: List<DataModel>) : RecyclerView.Adapter<HistoryAdapter.RecyclerItemViewHolder>() {
+class HistoryAdapter(private var onListItemClickListener: OnListItemClickListener, private var data: List<DataModel>) : RecyclerView.Adapter<HistoryAdapter.RecyclerItemViewHolder>() {
 
 
     fun setData(data: List<DataModel>) {
@@ -38,10 +37,19 @@ class HistoryAdapter(private var data: List<DataModel>) : RecyclerView.Adapter<H
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.header_history_textview_recycler_item.text = data.text
                 itemView.setOnClickListener {
-                    Toast.makeText(itemView.context, "on click: ${data.text}", Toast.LENGTH_SHORT)
-                        .show()
+                    onItemClicked(data)
                 }
             }
         }
     }
-}
+
+
+        private fun onItemClicked(listItemData: DataModel){
+            onListItemClickListener.onItemClick(listItemData)
+        }
+
+        interface OnListItemClickListener {
+            fun onItemClick(data: DataModel)
+
+        }
+    }

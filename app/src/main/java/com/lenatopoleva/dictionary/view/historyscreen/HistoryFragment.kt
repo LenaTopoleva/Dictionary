@@ -2,18 +2,16 @@ package com.lenatopoleva.dictionary.view.historyscreen
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lenatopoleva.dictionary.R
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
-import com.lenatopoleva.dictionary.utils.network.isOnline
 import com.lenatopoleva.dictionary.view.BackButtonListener
 import com.lenatopoleva.dictionary.view.base.BaseFragment
 import com.lenatopoleva.dictionary.view.wordslist.SearchDialogFragment
-import com.lenatopoleva.dictionary.view.wordslist.WordsListFragment
+import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import kotlinx.android.synthetic.main.fragment_history.*
 import org.koin.android.ext.android.getKoin
 
@@ -31,6 +29,12 @@ class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
 
     private val observer = Observer<AppState> { renderData(it)  }
     private var adapter: HistoryAdapter? = null
+    private val onListItemClickListener: HistoryAdapter.OnListItemClickListener =
+        object : HistoryAdapter.OnListItemClickListener {
+            override fun onItemClick(data: DataModel) {
+                model.wordClicked(data)
+            }
+        }
 
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -82,7 +86,7 @@ class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
     override fun setDataToAdapter(data: List<DataModel>) {
         if (adapter == null) {
             history_fragment_recyclerview.layoutManager = LinearLayoutManager(context)
-            history_fragment_recyclerview.adapter = HistoryAdapter(data)
+            history_fragment_recyclerview.adapter = HistoryAdapter(onListItemClickListener, data)
         } else {
             adapter!!.setData(data)
         }
