@@ -2,11 +2,9 @@ package com.lenatopoleva.dictionary.view.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.dictionary.R
-import com.lenatopoleva.dictionary.view.BackButtonListener
+import com.lenatopoleva.core.BackButtonListener
 import org.koin.android.ext.android.getKoin
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
-            if (it is BackButtonListener && it.backPressed()) {
+            if (it is com.lenatopoleva.core.BackButtonListener && it.backPressed()) {
                 return
             }
         }
