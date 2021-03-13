@@ -57,8 +57,8 @@ abstract class BaseFragment<T : AppState> : Fragment() {
                     progress_bar_round.visibility = View.GONE
                     progress_bar_horizontal.progress = appState.progress!!
                 } else {
-                    progress_bar_horizontal.visibility = View.GONE
-                    progress_bar_round.visibility = View.VISIBLE
+                    progress_bar_horizontal?.visibility = View.GONE
+                    progress_bar_round?.visibility = View.VISIBLE
                 }
             }
             is AppState.Error -> {
@@ -76,11 +76,11 @@ abstract class BaseFragment<T : AppState> : Fragment() {
     }
 
     private fun showViewWorking() {
-        loading_frame_layout.visibility = View.GONE
+        loading_frame_layout?.visibility = View.GONE
     }
 
     private fun showViewLoading() {
-        loading_frame_layout.visibility = View.VISIBLE
+        loading_frame_layout?.visibility = View.VISIBLE
     }
 
     protected fun showAlertDialog(title: String?, message: String?) {

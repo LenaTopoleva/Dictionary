@@ -13,16 +13,23 @@ import com.lenatopoleva.dictionary.model.repository.Repository
 import com.lenatopoleva.dictionary.model.repository.RepositoryImpl
 import com.lenatopoleva.dictionary.model.repository.RepositoryLocal
 import com.lenatopoleva.dictionary.model.repository.RepositoryLocalImpl
-import com.lenatopoleva.dictionary.view.historyscreen.HistoryInteractor
-import com.lenatopoleva.dictionary.view.historyscreen.HistoryViewModel
 import com.lenatopoleva.dictionary.view.main.MainActivityViewModel
 import com.lenatopoleva.dictionary.view.wordslist.WordsListInteractor
 import com.lenatopoleva.dictionary.view.wordslist.WordsListViewModel
+import org.koin.core.context.loadKoinModules
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import javax.inject.Provider
+
+
+fun injectDependencies() = loadModules
+
+private val loadModules by lazy {
+    loadKoinModules(listOf(application, viewModelModule, navigation, mainActivity, wordsListScreen))
+}
 
 val application = module {
     single { Room.databaseBuilder(get(), HistoryDatabase::class.java, "HistoryDB").build() }
@@ -32,15 +39,16 @@ val application = module {
 }
 
 val viewModelModule = module {
-    single<MutableMap<Class<out ViewModel>, Provider<ViewModel>>> {
+    single<MutableMap<Class<out ViewModel>, Provider<ViewModel>>>(qualifier = named("appViewModelMap")) {
         var map =
             mutableMapOf(
                 MainActivityViewModel::class.java to Provider<ViewModel>{MainActivityViewModel(get<Router>())},
-                WordsListViewModel::class.java to Provider<ViewModel>{WordsListViewModel(get<WordsListInteractor>(), get<Router>()) },
-                HistoryViewModel::class.java to Provider<ViewModel>{HistoryViewModel(get<HistoryInteractor>(), get<Router>()) })
+                WordsListViewModel::class.java to Provider<ViewModel>{WordsListViewModel(get<WordsListInteractor>(), get<Router>()) })
         map
     }
-    single<ViewModelProvider.Factory> { ViewModelFactory(get())}
+    single<ViewModelProvider.Factory>(qualifier = named("appViewModelProvider")) {
+        ViewModelFactory(get<MutableMap<Class<out ViewModel>, Provider<ViewModel>>>(
+            qualifier = named("appViewModelMap")))}
 }
 
 val navigation = module {
@@ -58,7 +66,4 @@ val wordsListScreen = module {
     factory { WordsListViewModel(get<WordsListInteractor>(), get<Router>()) }
 }
 
-val historyScreen = module {
-    factory { HistoryViewModel(get(), get()) }
-    factory { HistoryInteractor(get(), get()) }
-}
+

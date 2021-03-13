@@ -11,8 +11,10 @@ import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.core.base.BaseFragment
 import com.lenatopoleva.dictionary.view.wordslist.SearchDialogFragment
 import com.lenatopoleva.historyscreen.R
+import com.lenatopoleva.historyscreen.di.injectDependencies
 import kotlinx.android.synthetic.main.fragment_history.*
 import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.named
 
 
 class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
@@ -23,7 +25,8 @@ class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
     }
 
     override val model: HistoryViewModel by lazy {
-        ViewModelProvider(this, getKoin().get()).get(HistoryViewModel::class.java)
+        injectDependencies()
+        ViewModelProvider(this, getKoin().get<ViewModelProvider.Factory>(qualifier = named("historyViewModelProvider"))).get(HistoryViewModel::class.java)
     }
 
     private val observer = Observer<AppState> { renderData(it)  }

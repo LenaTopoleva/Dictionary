@@ -1,7 +1,6 @@
 package com.lenatopoleva.dictionary.navigation
 
 import com.lenatopoleva.descriptionscreen.DescriptionFragment
-import com.lenatopoleva.dictionary.view.historyscreen.HistoryFragment
 import com.lenatopoleva.dictionary.view.wordslist.WordsListFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
@@ -15,8 +14,8 @@ class Screens {
         override fun getFragment() = com.lenatopoleva.descriptionscreen.DescriptionFragment.newInstance(word, description, pictureUrl)
     }
 
-    class HistoryScreen() : SupportAppScreen() {
-        override fun getFragment() = HistoryFragment.newInstance()
-    }
+//    class HistoryScreen() : SupportAppScreen() {
+//        override fun getFragment() = HistoryFragment.newInstance()
+//    }
 
 }
