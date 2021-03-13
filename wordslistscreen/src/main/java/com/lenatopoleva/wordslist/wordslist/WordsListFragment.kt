@@ -2,24 +2,27 @@ package com.lenatopoleva.dictionary.view.wordslist
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.play.core.splitinstall.SplitInstallManager
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
-import com.lenatopoleva.core.BackButtonListener
 import com.lenatopoleva.core.base.BaseFragment
 import com.lenatopoleva.dictionary.utils.network.isOnline
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import com.lenatopoleva.wordslist.R
 import kotlinx.android.synthetic.main.fragment_words_list.*
 import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.named
 
 class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackButtonListener {
 
-    override val model: WordsListViewModel by lazy {
-        ViewModelProvider(this, getKoin().get()).get(WordsListViewModel::class.java)
-    }
+    override lateinit var model: WordsListViewModel
 
     private val observer = Observer<AppState> { renderData(it)  }
 
@@ -30,10 +33,25 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
                 model.wordClicked(data)
             }
         }
+    private lateinit var splitInstallManager: SplitInstallManager
+
 
     companion object {
         fun newInstance() = WordsListFragment()
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "12345"
+        private const val HISTORY_ACTIVITY_FEATURE_NAME = "historyscreen"
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
+
+    fun initViewModel(){
+        val factory = getKoin().get<ViewModelProvider.Factory>(qualifier = named("appViewModelProvider"))
+        val viewModel = ViewModelProvider(this, factory).get(WordsListViewModel::class.java)
+        model = viewModel
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -43,7 +61,7 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
     }
 
 
-    override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         println("model: $model ")
@@ -74,7 +92,31 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_history -> {
-                model.historyMenuItemClicked()
+                val historyFragment = Class
+                    .forName("com.lenatopoleva.dictionary.view.historyscreen.HistoryFragment")
+                    .newInstance()
+
+                splitInstallManager = SplitInstallManagerFactory.create(requireActivity())
+                val request =
+                    SplitInstallRequest
+                        .newBuilder()
+                        .addModule(HISTORY_ACTIVITY_FEATURE_NAME)
+                        .build()
+
+                splitInstallManager
+                    .startInstall(request)
+                    .addOnSuccessListener {
+                        if (historyFragment != null) {
+                            model.historyMenuItemClicked(historyFragment)
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            requireContext(),
+                            "Couldn't download feature: " + it.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 true
             }
             else -> super.onOptionsItemSelected(item)
