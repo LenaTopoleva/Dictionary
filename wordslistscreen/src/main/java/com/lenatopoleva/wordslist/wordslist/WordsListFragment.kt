@@ -18,6 +18,7 @@ import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import com.lenatopoleva.wordslist.R
 import kotlinx.android.synthetic.main.fragment_words_list.*
 import org.koin.android.ext.android.getKoin
+import org.koin.android.scope.currentScope
 import org.koin.core.qualifier.named
 
 class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackButtonListener {
@@ -49,9 +50,7 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
     }
 
     fun initViewModel(){
-        val factory = getKoin().get<ViewModelProvider.Factory>(qualifier = named("appViewModelProvider"))
-        val viewModel = ViewModelProvider(this, factory).get(WordsListViewModel::class.java)
-        model = viewModel
+        model = currentScope.get()
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {

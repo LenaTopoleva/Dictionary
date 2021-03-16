@@ -14,6 +14,7 @@ import com.lenatopoleva.historyscreen.R
 import com.lenatopoleva.historyscreen.di.injectDependencies
 import kotlinx.android.synthetic.main.fragment_history.*
 import org.koin.android.ext.android.getKoin
+import org.koin.android.scope.currentScope
 import org.koin.core.qualifier.named
 
 
@@ -26,7 +27,7 @@ class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
 
     override val model: HistoryViewModel by lazy {
         injectDependencies()
-        ViewModelProvider(this, getKoin().get<ViewModelProvider.Factory>(qualifier = named("historyViewModelProvider"))).get(HistoryViewModel::class.java)
+        currentScope.get()
     }
 
     private val observer = Observer<AppState> { renderData(it)  }
