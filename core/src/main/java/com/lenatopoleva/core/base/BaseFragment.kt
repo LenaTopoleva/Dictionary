@@ -1,14 +1,16 @@
 package com.lenatopoleva.core.base
 
-import android.os.Bundle
+
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.lenatopoleva.core.R
 import com.lenatopoleva.core.viewmodel.BaseViewModel
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
-import com.lenatopoleva.dictionary.utils.network.isOnline
+import com.lenatopoleva.dictionary.utils.network.OnlineLiveData
 import com.lenatopoleva.dictionary.utils.ui.AlertDialogFragment
+import com.lenatopoleva.dictionary.utils.ui.toast
 import kotlinx.android.synthetic.main.loading_layout.*
 
 
@@ -19,17 +21,10 @@ abstract class BaseFragment<T : AppState> : Fragment() {
     protected var isNetworkAvailable: Boolean = false
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        isNetworkAvailable = isOnline(requireActivity().applicationContext)
-    }
 
     override fun onResume() {
         super.onResume()
-        isNetworkAvailable = isOnline(requireActivity().applicationContext)
-        if (!isNetworkAvailable && isDialogNull()) {
-            showNoInternetConnectionDialog()
-        }
+        subscribeToNetworkChange()
     }
 
     protected fun renderData(appState: T) {
@@ -95,6 +90,18 @@ abstract class BaseFragment<T : AppState> : Fragment() {
 
     companion object {
         private const val DIALOG_FRAGMENT_TAG = "74a54328-5d62-46bf-ab6b-cbf5d8c79522"
+    }
+
+    private fun subscribeToNetworkChange() {
+        OnlineLiveData(requireContext()).observe(
+            viewLifecycleOwner,
+            Observer<Boolean> {
+                isNetworkAvailable = it
+                println("NETWORK, available:$it")
+                if (!isNetworkAvailable) {
+                    requireContext().toast(R.string.dialog_message_device_is_offline)
+                }
+            })
     }
 }
 
