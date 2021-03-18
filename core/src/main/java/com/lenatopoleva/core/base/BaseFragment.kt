@@ -11,6 +11,7 @@ import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.dictionary.utils.network.OnlineLiveData
 import com.lenatopoleva.dictionary.utils.ui.AlertDialogFragment
 import com.lenatopoleva.dictionary.utils.ui.toast
+import com.lenatopoleva.utils.ui.getLastWord
 import kotlinx.android.synthetic.main.loading_layout.*
 
 
@@ -25,6 +26,10 @@ abstract class BaseFragment<T : AppState> : Fragment() {
     override fun onResume() {
         super.onResume()
         subscribeToNetworkChange()
+
+        //Check SharedPreferencesDelegate:
+        val word by getLastWord<String>()
+        println("Last word = " + word)
     }
 
     protected fun renderData(appState: T) {

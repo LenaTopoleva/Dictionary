@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.lenatopoleva.dictionary.R
-import com.lenatopoleva.core.BackButtonListener
 import com.lenatopoleva.dictionary.di.modules.injectDependencies
 import org.koin.android.ext.android.getKoin
 import org.koin.core.qualifier.named
