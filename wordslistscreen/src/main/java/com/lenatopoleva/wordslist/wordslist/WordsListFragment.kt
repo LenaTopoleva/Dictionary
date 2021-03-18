@@ -3,9 +3,7 @@ package com.lenatopoleva.dictionary.view.wordslist
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
@@ -13,12 +11,10 @@ import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.core.base.BaseFragment
-import com.lenatopoleva.dictionary.utils.network.isOnline
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import com.lenatopoleva.wordslist.R
 import kotlinx.android.synthetic.main.fragment_words_list.*
-import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.named
+import org.koin.android.scope.currentScope
 
 class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackButtonListener {
 
@@ -49,9 +45,7 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
     }
 
     fun initViewModel(){
-        val factory = getKoin().get<ViewModelProvider.Factory>(qualifier = named("appViewModelProvider"))
-        val viewModel = ViewModelProvider(this, factory).get(WordsListViewModel::class.java)
-        model = viewModel
+        model = currentScope.get()
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -71,7 +65,6 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object : SearchDialogFragment.OnSearchClickListener {
                 override fun onClick(searchWord: String) {
-                    isNetworkAvailable = isOnline(activity!!.applicationContext)
                     if (isNetworkAvailable) {
                         model.getData(searchWord, isNetworkAvailable)
                     } else {

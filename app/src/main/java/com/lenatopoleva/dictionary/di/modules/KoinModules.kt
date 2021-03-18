@@ -1,5 +1,7 @@
 package com.lenatopoleva.dictionary.di.modules
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -14,8 +16,11 @@ import com.lenatopoleva.dictionary.model.repository.RepositoryImpl
 import com.lenatopoleva.dictionary.model.repository.RepositoryLocal
 import com.lenatopoleva.dictionary.model.repository.RepositoryLocalImpl
 import com.lenatopoleva.dictionary.view.main.MainActivityViewModel
+import com.lenatopoleva.dictionary.view.wordslist.WordsListFragment
 import com.lenatopoleva.dictionary.view.wordslist.WordsListInteractor
 import com.lenatopoleva.dictionary.view.wordslist.WordsListViewModel
+import com.lenatopoleva.utils.ui.SharedPreferencesDelegate
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -62,8 +67,10 @@ val mainActivity = module {
 }
 
 val wordsListScreen = module {
-    factory { WordsListInteractor(get(), get()) }
-    factory { WordsListViewModel(get<WordsListInteractor>(), get<Router>()) }
+    scope(named<WordsListFragment>()) {
+        scoped { WordsListInteractor(get(), get()) }
+        viewModel { WordsListViewModel(get<WordsListInteractor>(), get<Router>()) }
+    }
 }
 
 

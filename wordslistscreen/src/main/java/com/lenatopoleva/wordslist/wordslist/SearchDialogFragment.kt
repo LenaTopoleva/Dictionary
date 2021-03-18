@@ -1,5 +1,6 @@
 package com.lenatopoleva.dictionary.view.wordslist
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import com.lenatopoleva.utils.ui.SharedPreferencesDelegate
+import com.lenatopoleva.utils.ui.saveLastWord
 import com.lenatopoleva.wordslist.R
 import kotlinx.android.synthetic.main.search_dialog_fragment.*
 
@@ -46,6 +49,9 @@ class SearchDialogFragment : BottomSheetDialogFragment() {
     private val onSearchButtonClickListener =
         View.OnClickListener {
             onSearchClickListener?.onClick(searchEditText.text.toString())
+
+            //Check SharedPreferencesDelegate:
+            saveLastWord(searchEditText.text.toString())
             dismiss()
         }
 
