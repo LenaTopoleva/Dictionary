@@ -1,8 +1,12 @@
 package com.lenatopoleva.dictionary.view.wordslist
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.play.core.splitinstall.SplitInstallManager
@@ -79,9 +83,12 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
+        menu.findItem(R.id.menu_screen_settings)?.isVisible =
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_history -> {
@@ -110,6 +117,10 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                true
+            }
+            R.id.menu_screen_settings -> {
+                startActivityForResult(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY), 42)
                 true
             }
             else -> super.onOptionsItemSelected(item)
