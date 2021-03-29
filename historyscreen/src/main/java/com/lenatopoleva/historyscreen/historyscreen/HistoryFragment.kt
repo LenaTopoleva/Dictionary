@@ -2,20 +2,20 @@ package com.lenatopoleva.dictionary.view.historyscreen
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lenatopoleva.core.BackButtonListener
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
 import com.lenatopoleva.core.base.BaseFragment
+import com.lenatopoleva.dictionary.utils.ui.recordInitialMarginForView
+import com.lenatopoleva.dictionary.utils.ui.requestApplyInsetsWhenAttached
 import com.lenatopoleva.dictionary.view.wordslist.SearchDialogFragment
 import com.lenatopoleva.historyscreen.R
 import com.lenatopoleva.historyscreen.di.injectDependencies
 import kotlinx.android.synthetic.main.fragment_history.*
-import org.koin.android.ext.android.getKoin
 import org.koin.android.scope.currentScope
-import org.koin.core.qualifier.named
 
 
 class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
@@ -76,6 +76,23 @@ class HistoryFragment : BaseFragment<AppState>(), BackButtonListener {
         super.onViewCreated(view, savedInstanceState)
         println("history fragment viewmodel: $model ")
         model.subscribe().observe(viewLifecycleOwner, observer)
+
+        fixMarginsWhenApplyWindowInsets(view)
+
+    }
+
+    fun fixMarginsWhenApplyWindowInsets(view: View){
+        val rvInitialMargin = recordInitialMarginForView(history_fragment_recyclerview)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view.rootView) { v, insets ->
+            val params = history_fragment_recyclerview?.layoutParams as ViewGroup.MarginLayoutParams
+            params.topMargin = rvInitialMargin.top + insets.systemWindowInsetTop
+//                    (requireActivity() as AppCompatActivity).supportActionBar?.height!!
+            history_fragment_recyclerview?.layoutParams = params
+
+            insets.consumeSystemWindowInsets()
+        }
+        view.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
