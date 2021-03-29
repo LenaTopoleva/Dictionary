@@ -5,16 +5,21 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
+import com.lenatopoleva.core.base.BaseFragment
 import com.lenatopoleva.dictionary.model.data.AppState
 import com.lenatopoleva.dictionary.model.data.DataModel
-import com.lenatopoleva.core.base.BaseFragment
+import com.lenatopoleva.dictionary.utils.ui.recordInitialMarginForView
+import com.lenatopoleva.dictionary.utils.ui.requestApplyInsetsWhenAttached
 import com.lenatopoleva.dictionary.view.wordslist.adapter.WordsListRVAdapter
 import com.lenatopoleva.wordslist.R
 import kotlinx.android.synthetic.main.fragment_words_list.*
@@ -52,7 +57,11 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
         model = currentScope.get()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_words_list, parent, false)
         setHasOptionsMenu(true)
         return v
@@ -62,12 +71,15 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        fixMarginsWhenApplyWindowInsets(view)
+
         println("model: $model ")
         model.subscribe().observe(viewLifecycleOwner, observer)
 
         search_fab.setOnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
-            searchDialogFragment.setOnSearchClickListener(object : SearchDialogFragment.OnSearchClickListener {
+            searchDialogFragment.setOnSearchClickListener(object :
+                SearchDialogFragment.OnSearchClickListener {
                 override fun onClick(searchWord: String) {
                     if (isNetworkAvailable) {
                         model.getData(searchWord, isNetworkAvailable)
@@ -78,6 +90,26 @@ class WordsListFragment : BaseFragment<AppState>(), com.lenatopoleva.core.BackBu
             })
             searchDialogFragment.show(childFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
         }
+    }
+
+    fun fixMarginsWhenApplyWindowInsets(view: View){
+        val searchFabInitialMargin = recordInitialMarginForView(search_fab)
+        val rvInitialMargin = recordInitialMarginForView(words_list_recyclerview)
+
+        // Когда активити получает insets, меняем отступы.
+        ViewCompat.setOnApplyWindowInsetsListener(view.rootView) { v, insets ->
+            val params = search_fab.layoutParams as MarginLayoutParams
+            params.bottomMargin = searchFabInitialMargin.bottom + insets.systemWindowInsetBottom
+            search_fab.layoutParams = params
+
+            val rvParams = words_list_recyclerview.layoutParams as MarginLayoutParams
+            rvParams.topMargin = rvInitialMargin.top + insets.systemWindowInsetTop
+//                    (requireActivity() as AppCompatActivity).supportActionBar?.height!!
+            words_list_recyclerview.layoutParams = rvParams
+
+            insets.consumeSystemWindowInsets()
+        }
+        view.rootView.requestApplyInsetsWhenAttached()
     }
 
 
